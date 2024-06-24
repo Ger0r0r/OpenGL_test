@@ -1,9 +1,3 @@
-# Попытка
+# Вращающийся куб (очень красиво)
 
-cd build
-
-cmake ..
-
-cmake --build .
-
-./TestOpenGL.exe
+Сделан через VAO и VBO
