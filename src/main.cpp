@@ -54,8 +54,7 @@ tinygltf::TinyGLTF loader;
 std::string err;
 std::string warn;
 
-void bindMesh(std::map<int, GLuint>& vbos,
-				tinygltf::Model &model, tinygltf::Mesh &mesh) {
+void bindMesh(std::map<int, GLuint>& vbos, tinygltf::Model &model, tinygltf::Mesh &mesh) {
 	for (size_t i = 0; i < model.bufferViews.size(); ++i) {
 		const tinygltf::BufferView &bufferView = model.bufferViews[i];
 		if (bufferView.target == 0) {  // TODO impl drawarrays
@@ -201,40 +200,36 @@ std::pair<GLuint, std::map<int, GLuint>> bindModel(tinygltf::Model &model) {
 	return {vao, vbos};
 }
 
-void drawMesh(const std::map<int, GLuint>& vbos,
-					tinygltf::Model &model, tinygltf::Mesh &mesh) {
-  for (size_t i = 0; i < mesh.primitives.size(); ++i) {
-    tinygltf::Primitive primitive = mesh.primitives[i];
-    tinygltf::Accessor indexAccessor = model.accessors[primitive.indices];
+void drawMesh(const std::map<int, GLuint>& vbos, tinygltf::Model &model, tinygltf::Mesh &mesh) {
+	for (size_t i = 0; i < mesh.primitives.size(); ++i) {
+		tinygltf::Primitive primitive = mesh.primitives[i];
+		tinygltf::Accessor indexAccessor = model.accessors[primitive.indices];
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos.at(indexAccessor.bufferView));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos.at(indexAccessor.bufferView));
 
-    glDrawElements(primitive.mode, indexAccessor.count,
-                   indexAccessor.componentType,
-                   BUFFER_OFFSET(indexAccessor.byteOffset));
-  }
+		glDrawElements(primitive.mode, indexAccessor.count, indexAccessor.componentType, BUFFER_OFFSET(indexAccessor.byteOffset));
+	}
 }
 
 // recursively draw node and children nodes of model
-void drawModelNodes(const std::pair<GLuint, std::map<int, GLuint>>& vaoAndEbos,
-                    tinygltf::Model &model, tinygltf::Node &node) {
-  if ((node.mesh >= 0) && (node.mesh < model.meshes.size())) {
-    drawMesh(vaoAndEbos.second, model, model.meshes[node.mesh]);
-  }
-  for (size_t i = 0; i < node.children.size(); i++) {
-    drawModelNodes(vaoAndEbos, model, model.nodes[node.children[i]]);
-  }
+void drawModelNodes(const std::pair<GLuint, std::map<int, GLuint>>& vaoAndEbos, tinygltf::Model &model, tinygltf::Node &node) {
+	if ((node.mesh >= 0) && (node.mesh < model.meshes.size())) {
+		drawMesh(vaoAndEbos.second, model, model.meshes[node.mesh]);
+	}
+	for (size_t i = 0; i < node.children.size(); i++) {
+		drawModelNodes(vaoAndEbos, model, model.nodes[node.children[i]]);
+	}
 }
-void drawModel(const std::pair<GLuint, std::map<int, GLuint>>& vaoAndEbos,
-               tinygltf::Model &model) {
-  glBindVertexArray(vaoAndEbos.first);
 
-  const tinygltf::Scene &scene = model.scenes[model.defaultScene];
-  for (size_t i = 0; i < scene.nodes.size(); ++i) {
-    drawModelNodes(vaoAndEbos, model, model.nodes[scene.nodes[i]]);
-  }
+void drawModel(const std::pair<GLuint, std::map<int, GLuint>>& vaoAndEbos, tinygltf::Model &model) {
+	glBindVertexArray(vaoAndEbos.first);
 
-  glBindVertexArray(0);
+	const tinygltf::Scene &scene = model.scenes[model.defaultScene];
+	for (size_t i = 0; i < scene.nodes.size(); ++i) {
+		drawModelNodes(vaoAndEbos, model, model.nodes[scene.nodes[i]]);
+	}
+
+	glBindVertexArray(0);
 }
 
 int main() {
@@ -436,8 +431,7 @@ int main() {
 
 	// render loop
 	// -----------
-	while (!glfwWindowShouldClose(window))
-	{
+	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -487,8 +481,7 @@ int main() {
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
-{
+void processInput(GLFWwindow *window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
@@ -509,8 +502,7 @@ void processInput(GLFWwindow *window)
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
@@ -518,8 +510,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
 	float xpos = static_cast<float>(xposIn);
 	float ypos = static_cast<float>(yposIn);
 
@@ -557,8 +548,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 	fov -= (float)yoffset;
 	if (fov < 1.0f)
 		fov = 1.0f;

@@ -1,0 +1,8 @@
+Model Information:
+* title:	Battlefury
+* source:	https://sketchfab.com/3d-models/battlefury-0a4a46e410d844d293037731fc23aeda
+* author:	plazma019 (https://sketchfab.com/plazma019)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
